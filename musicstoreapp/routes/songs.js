@@ -1,14 +1,25 @@
 module.exports = function(app) {
     app.get("/songs", function(req, res) {
+        let songs = [{
+            "title":"Rosas",
+            "price":"1.2"
+        },{
+            "title":"Mi carro",
+            "price":"1.3"
+        },{
+            "title":"Mentirosa",
+            "price":"1.1"
+        }];
 
-        let response = "";
-        if(req.query.title != null && typeof(req.query.title) != "undefined"){
-            response = 'Titulo:' + req.query.title + '<br>';
-        }
-        if(req.query.author != null && typeof(req.query.author) != "undefined"){
-            response += 'Autor:' + req.query.author;
-        }
-        res.send(response);
+        let response = {
+            seller:"Tienda de canciones",
+            songs:songs
+        };
+        res.render("shop.twig",response);
+    });
+
+    app.get('/songs/add', function (req, res) {
+        res.render("add.twig");
     });
 
     app.get('/add', function(req, res) {
@@ -43,5 +54,4 @@ module.exports = function(app) {
     app.get('/pro*ar', function (req, res) {
         res.send('Respuesta al patrón pro*ar');
     });
-
 };
