@@ -1,0 +1,18 @@
+{% extends "layout.twig" %}
+{% block title %} Lista de cantantes {% endblock %}
+{% block main_container %}
+<h2>Cantantes</h2>
+<div class="row">
+    <!-- Inicio del Bloque autor -->
+    {% for autor in autores %}
+    <div class="col-xs-6 col-sm-6 col-md-4 col-lg-3">
+        <div style="width:200px">
+            <div class="small">{{ autor.name }} </div>
+            <div class="small">{{ autor.group }} </div>
+            <div class="small">{{ autor.rol }} </div>
+        </div>
+    </div>
+    {% endfor %}
+    <!-- Fin del Bloque autor -->
+</div>
+{% endblock %}
