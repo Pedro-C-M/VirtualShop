@@ -65,4 +65,5 @@ module.exports = function(app, dbClient) {
     app.get('/pro*ar', function (req, res) {
         res.send('Respuesta al patrón pro*ar');
     });
+
 };
