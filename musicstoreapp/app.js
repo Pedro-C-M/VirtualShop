@@ -18,8 +18,12 @@ app.use(bodyParser.urlencoded({ extended: true }))
 const { MongoClient } = require("mongodb");
 const connectionStrings = "mongodb+srv://admin:sdi@cluster0.ca1pnp7.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
 const dbClient = new MongoClient(connectionStrings);//Este es el objeto de la base
+//<----Repositorios---->
+let songsRepository = require("./repositories/songsRepository.js");
+songsRepository.init(app, dbClient);
+
 //<----Imports de la aplicación---->
-require("./routes/songs.js")(app,dbClient);
+require("./routes/songs.js")(app,songsRepository);
 require("./routes/authors.js")(app);
 
 

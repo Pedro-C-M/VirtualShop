@@ -1,4 +1,4 @@
-module.exports = function(app, dbClient) {
+module.exports = function(app, songsRepository) {
     app.get("/songs", function(req, res) {
         let songs = [{
             "title":"Rosas",
@@ -38,12 +38,14 @@ module.exports = function(app, dbClient) {
                 const database = dbClient.db("musicStore");
                 const collectionName = 'songs';
                 const songsCollection = database.collection(collectionName);
-                songsCollection.insertOne(song)
-                    .then(result => res.send("canción añadida id: " + result.insertedId))
-                    .then(() => dbClient.close())
-                    .catch(err => res.send("Error al insertar " + err));
+                songsRepository.insertSong(song, function(result){
+                    if(result.songId !== null && result.songId !== undefined){
+                        res.send("Agregada la canción ID: "+result.songId);
+                    }else{
+                        res.send("Error al insertar cannción "+result.error);
+                    }
+                });
             })
-            .catch(err => res.send("Error de conexión: " + err));
     });
 
     app.get('/songs/:id', function(req, res) {
