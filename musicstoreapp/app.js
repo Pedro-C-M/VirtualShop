@@ -1,9 +1,11 @@
+//<----Imports externos de la aplicación---->
 var createError = require('http-errors');
 var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 
+//<----Enrutadores de la aplicación---->
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 
@@ -12,8 +14,12 @@ var app = express();
 let bodyParser = require('body-parser');
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }))
-
-require("./routes/songs.js")(app);
+//<----MongoDB---->
+const { MongoClient } = require("mongodb");
+const connectionStrings = "mongodb+srv://admin:sdi@cluster0.ca1pnp7.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
+const dbClient = new MongoClient(connectionStrings);//Este es el objeto de la base
+//<----Imports de la aplicación---->
+require("./routes/songs.js")(app,dbClient);
 require("./routes/authors.js")(app);
 
 
