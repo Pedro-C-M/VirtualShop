@@ -1,11 +1,34 @@
 module.exports = {
-    mongoClient: null,
+    dbClient: null,
     app: null,
     database: "musicStore",
     collectionName: "songs",
+
     init: function (app, dbClient) {
         this.dbClient = dbClient;
         this.app = app;
+    },
+    findSong: async function (filter, options) {
+        try {
+            await this.dbClient.connect();
+            const database = this.dbClient.db(this.database);
+            const songsCollection = database.collection(this.collectionName);
+            const song = await songsCollection.findOne(filter, options);
+            return song;
+        } catch (error) {
+            throw (error);
+        }
+    },
+    getSongs: async function (filter, options) {
+        try {
+            await this.dbClient.connect();
+            const database = this.dbClient.db(this.database);
+            const songsCollection = database.collection(this.collectionName);
+            const songs = await songsCollection.find(filter, options).toArray();
+            return songs;
+        } catch (error) {
+            throw (error);
+        }
     },
     insertSong: function (song, callbackFunction) {
         this.dbClient.connect()
@@ -13,7 +36,10 @@ module.exports = {
                 const database = this.dbClient.db(this.database);
                 const songsCollection = database.collection(this.collectionName);
                 songsCollection.insertOne(song)
-                    .then(result => callbackFunction(result.insertedId))
+                    .then(result => {
+                        let songId = result.insertedId.toString();
+                        callbackFunction(songId)
+                    })
                     .then(() => this.dbClient.close())
                     .catch(err => callbackFunction({error: err.message}));
             })
