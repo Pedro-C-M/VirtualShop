@@ -7,9 +7,22 @@ var logger = require('morgan');
 
 //<----Enrutadores de la aplicación---->
 var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
 
 var app = express();
+
+//<----Uso de sesión---->
+let expressSession = require('express-session');
+app.use(expressSession({
+  secret: 'abcdefg',
+  resave: true,
+  saveUninitialized: true
+}));
+
+//<----Encriptación con Crypto---->
+var crypto = require('crypto');
+app.set('clave','abcdefg');
+app.set('crypto',crypto);
+
 //<----Subida de ficheros---->
 let fileUpload = require('express-fileupload');
 app.use(fileUpload({
@@ -21,15 +34,21 @@ app.set('uploadPath', __dirname)
 let bodyParser = require('body-parser');
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }))
+
 //<----MongoDB---->
 const { MongoClient } = require("mongodb");
 const connectionStrings = "mongodb+srv://admin:sdi@cluster0.ca1pnp7.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
 const dbClient = new MongoClient(connectionStrings);//Este es el objeto de la base
+
 //<----Repositorios---->
-let songsRepository = require("./repositories/songsRepository.js");
+const songsRepository = require("./repositories/songsRepository.js");
 songsRepository.init(app, dbClient);
+const usersRepository = require("./repositories/userRepository.js");
+usersRepository.init(app, dbClient);
+
 
 //<----Imports de la aplicación---->
+require("./routes/users.js")(app, usersRepository);
 require("./routes/songs.js")(app,songsRepository);
 require("./routes/authors.js")(app);
 
@@ -45,7 +64,6 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
-app.use('/users', usersRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
