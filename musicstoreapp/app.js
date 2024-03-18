@@ -18,6 +18,16 @@ app.use(expressSession({
   saveUninitialized: true
 }));
 
+//<----Router de sesión---->
+const userSessionRouter = require('./routes/userSessionRouter');
+app.use("/songs/add",userSessionRouter);
+app.use("/publications",userSessionRouter);
+app.use("/shop/",userSessionRouter)
+
+//<----Router de audio---->
+const userAudiosRouter = require('./routes/userAudiosRouter');
+app.use("/audios/",userAudiosRouter);
+
 //<----Encriptación con Crypto---->
 var crypto = require('crypto');
 app.set('clave','abcdefg');
