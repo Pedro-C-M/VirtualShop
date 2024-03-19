@@ -1,0 +1,22 @@
+{% extends "layout.twig" %}
+{% block title %} Tienda – uoMusic {% endblock %}
+{% block main_container %}
+    <h2>Canciones favoritas</h2>
+
+    <h3>Precio de todas las canciones: {{ sumaPrecios }} €</h3>
+    <div class="row">
+        <!-- Inicio del Bloque canción -->
+        {% for song in songs %}
+            <div class="col-xs-6 col-sm-6 col-md-4 col-lg-3">
+                <div style="width:200px">
+                    <p>Título: {{ song.title }}</p>
+                    <p>Fecha de adición: {{ song.date }}</p>
+                    <p>Precio: {{song.price}} € </p>
+                    <a href="/songs/favorites/delete/{{ song._id }}">Quitar canción de favoritos</a>
+                </div>
+            </div>
+        {% endfor %}
+        <!-- Fin del Bloque canción -->
+    </div>
+
+{% endblock %}

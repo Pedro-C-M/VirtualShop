@@ -23,6 +23,7 @@ const userSessionRouter = require('./routes/userSessionRouter');
 app.use("/songs/add",userSessionRouter);
 app.use("/publications",userSessionRouter);
 app.use("/shop/",userSessionRouter)
+app.use("/songs/favorites",userSessionRouter)
 
 //<----Router de audio---->
 const userAudiosRouter = require('./routes/userAudiosRouter');
@@ -53,12 +54,15 @@ const dbClient = new MongoClient(connectionStrings);//Este es el objeto de la ba
 //<----Repositorios---->
 const songsRepository = require("./repositories/songsRepository.js");
 songsRepository.init(app, dbClient);
+const favoriteSongsRepository = require("./repositories/favoriteSongsRepository.js");
+favoriteSongsRepository.init(app, dbClient);
 const usersRepository = require("./repositories/userRepository.js");
 usersRepository.init(app, dbClient);
 
 
 //<----Imports de la aplicación---->
 require("./routes/users.js")(app, usersRepository);
+require("./routes/favoriteSongs.js")(app,favoriteSongsRepository,songsRepository);
 require("./routes/songs.js")(app,songsRepository);
 require("./routes/authors.js")(app);
 
