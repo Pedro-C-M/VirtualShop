@@ -25,6 +25,12 @@ app.use("/publications",userSessionRouter);
 app.use("/shop/",userSessionRouter)
 app.use("/songs/favorites",userSessionRouter)
 
+//<----Router de autoría de canción---->
+const userAuthorRouter = require('./routes/userAuthorRouter');
+app.use("/songs/edit",userAuthorRouter);
+app.use("/songs/delete",userAuthorRouter);
+
+
 //<----Router de audio---->
 const userAudiosRouter = require('./routes/userAudiosRouter');
 app.use("/audios/",userAudiosRouter);

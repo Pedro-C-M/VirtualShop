@@ -31,7 +31,7 @@ module.exports = function (app, usersRepository) {
         res.send("Usuario no identificadi");
       }else{
         req.session.user = user.email;
-        res.send("Usuario identificado correctamente: "+user.email);
+        res.redirect("shop.twig");
       }
     }).catch(error => {
       req.session.user = null;
