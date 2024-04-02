@@ -28,14 +28,20 @@ module.exports = function (app, usersRepository) {
     usersRepository.findUser(filter,options).then(user => {
       if(user == null){
         req.session.user = null;
-        res.send("Usuario no identificadi");
+        //res.send("Usuario no identificadi");
+        res.redirect("/users/login" +
+            "?message=Email o password incorrecto"+
+            "&messageType=alert-danger ");
       }else{
         req.session.user = user.email;
         res.redirect("/publications");
       }
     }).catch(error => {
       req.session.user = null;
-      res.send("Error al buscar el usuario "+error);
+      //res.send("Error al buscar el usuario "+error);
+      res.redirect("/users/login" +
+          "?message=Se ha producido un error al buscar el usuario"+
+          "&messageType=alert-danger ");
     });
   });
 
@@ -47,9 +53,14 @@ module.exports = function (app, usersRepository) {
       password: securePassword
     }
     usersRepository.insertUser(user).then(userId => {
-      res.redirect("/users/login");
+      res.redirect("/users/login" +
+          "?message=Usuario añadido correctamente. "+
+          "&messageType=alert-info ");
     }).catch(error => {
-      res.send("Error al insertar el usuario");
+      //res.send("Error al insertar el usuario");
+      res.redirect("/users/signup" +
+          "?message=Se ha producido un error al registrar el usuario. "+
+          "&messageType=alert-danger ");
     });
   });
 
