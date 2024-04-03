@@ -8,6 +8,17 @@ module.exports = {
         this.dbClient = dbClient;
         this.app = app;
     },
+    isBought: async function (filter, options) {
+        try {
+            await this.dbClient.connect();
+            const database = this.dbClient.db(this.database);
+            const purchasesCollection = database.collection('purchases');
+            const purchase = await purchasesCollection.findOne(filter, options);
+            return purchase !== null; // Devuelve true si la compra existe, de lo contrario false
+        } catch (error) {
+            throw (error);
+        }
+    },
     getSongsPg: async function (filter, options, page) {
         try {
             const limit = 4;
@@ -74,6 +85,23 @@ module.exports = {
             const songsCollection = database.collection(this.collectionName);
             const songs = await songsCollection.find(filter, options).toArray();
             return songs;
+        } catch (error) {
+            throw (error);
+        }
+    },
+    getSongAuthor: async function (songId) {
+        try {
+            await this.dbClient.connect();
+            const database = this.dbClient.db(this.database);
+            const songsCollection = database.collection(this.collectionName);
+            // Buscar el autor de la canción
+            const song = await songsCollection.findOne({ _id: songId }, {projection: { author:1 }});
+            // Verificar si se encontró la canción y devolver su autor
+            if (song) {
+                return song.author;
+            } else {
+                throw new Error('La canción no fue encontrada.');
+            }
         } catch (error) {
             throw (error);
         }

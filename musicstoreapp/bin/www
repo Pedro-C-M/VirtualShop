@@ -32,17 +32,21 @@ let httpsServer = https.createServer(credentials, app);
   server.listen(app.get('port'), function() {
     console.log("Servidor activo");
 })
+//Hasta aqui HTTPS
 /**
  * Create HTTP server.
  */
 
-//var server = http.createServer(app);
+//  var server = http.createServer(app);
+//  server.listen(app.get('port'));
 
 /**
  * Listen on provided port, on all network interfaces.
  */
 
-//server.listen(app.get('port'));
+
+
+//Hasta aqui HTTP
 server.on('error', onError);
 server.on('listening', onListening);
 
