@@ -13,6 +13,11 @@ var indexRouter = require('./routes/index');
 
 var app = express();
 
+
+//<----Encriptación tokens API---->
+let jwt = require('jsonwebtoken');
+app.set('jwt', jwt);
+
 //<----Uso de sesión---->
 let expressSession = require('express-session');
 app.use(expressSession({
@@ -29,6 +34,10 @@ app.use("/shop/",userSessionRouter)
 app.use("/songs/favorites",userSessionRouter)
 app.use("/songs/buy",userSessionRouter);
 app.use("/purchases",userSessionRouter);
+
+//<----Router de token de API---->
+const userTokenRouter = require('./routes/userTokenRouter');
+app.use("/api/v1.0/songs/", userTokenRouter);
 
 //<----Router de autoría de canción---->
 const userAuthorRouter = require('./routes/userAuthorRouter');
@@ -79,7 +88,7 @@ require("./routes/songs.js")(app,songsRepository);
 require("./routes/authors.js")(app);
 
 //<----API's---->
-require("./routes/api/songsAPIv1.0.js")(app, songsRepository);
+require("./routes/api/songsAPIv1.0.js")(app, songsRepository, usersRepository);
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
