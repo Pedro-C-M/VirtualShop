@@ -5,7 +5,7 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 
-//Comando para arrancar nodemon
+//Comando para arrancar nodemon desde musicstoreapp
 //npx nodemon musicstoreapp -e twig,js,json
 
 //<----Enrutadores de la aplicación---->
@@ -13,6 +13,15 @@ var indexRouter = require('./routes/index');
 
 var app = express();
 
+//<----Permite solicitudes---->
+app.use(function(req, res, next) {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Credentials", "true");
+  res.header("Access-Control-Allow-Methods", "POST, GET, DELETE, UPDATE, PUT");
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type,Accept, token");
+  // Debemos especificar todas las headers que se aceptan. Content-Type , token
+  next();
+});
 
 //<----Encriptación tokens API---->
 let jwt = require('jsonwebtoken');
