@@ -248,6 +248,7 @@ module.exports = function(app, songsRepository) {
                 let canBuy = (isAuthor || isBought);
                 let settings = {
                     url: "http://api.currencylayer.com/live?access_key=bblTnJGS5I6TxVRfjRQMllqZqMjjzcpk&currencies=EUR,USD",
+                    //https://api.currencyapi.com/v3/latest?apikey=bblTnJGS5I6TxVRfjRQMllqZqMjjzcpk&base_currency=EUR&currencies=USD
                     method: "get"
                 }
                 let rest = app.get("rest");
