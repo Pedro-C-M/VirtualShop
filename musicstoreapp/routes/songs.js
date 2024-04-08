@@ -237,15 +237,29 @@ module.exports = function(app, songsRepository) {
     });
 
     app.get('/songs/:id', function (req, res) {
-        let filter = {_id: new ObjectId(req.params.id)};
-        let filter2 = {user:req.session.user , song_id: new ObjectId(req.params.id)};
+        let songId = new ObjectId(req.params.id);
+        let filter = {_id: songId};
+        let filter2 = {user:req.session.user , song_id: songId};
         let isBought = false;
         songsRepository.isBought(filter2, {}).then(resp =>{
             isBought = resp;
             songsRepository.findSong(filter, {}).then(song => {
                 let isAuthor = req.session.user == song.author;
                 let canBuy = (isAuthor || isBought);
-                res.render("songs/song.twig", {song: song, alreadyBought: isBought, isAuthor:isAuthor, canBuy:canBuy});
+                let settings = {
+                    url: "http://api.currencylayer.com/live?access_key=bblTnJGS5I6TxVRfjRQMllqZqMjjzcpk&currencies=EUR,USD",
+                    method: "get"
+                }
+                let rest = app.get("rest");
+                rest(settings, function (error, response, body) {
+                    console.log("cod: " + response.statusCode + " Cuerpo :" + body);
+                    let responseObject = JSON.parse(body);
+                    let rateUSD = responseObject.quotes.USDEUR;
+                    // nuevo campo "usd" redondeado a dos decimales
+                    let songValue = song.price / rateUSD
+                    song.usd = Math.round(songValue * 100) / 100;
+                    res.render("songs/song.twig", {song: song, alreadyBought: isBought, isAuthor:isAuthor, canBuy:canBuy});
+                })
             }).catch(error => {
                 res.send("Se ha producido un error al buscar la canción " + error)
             });

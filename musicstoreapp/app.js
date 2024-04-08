@@ -13,6 +13,12 @@ var indexRouter = require('./routes/index');
 
 var app = express();
 
+//<---Incrusta poder hacer REST---->
+let rest = require('request');
+app.set('rest', rest);
+//API key: pPXK5Q9NDZTtChGh22zpjNvQZT21kS3p
+
+
 //<----Permite solicitudes---->
 app.use(function(req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");
