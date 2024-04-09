@@ -247,15 +247,14 @@ module.exports = function(app, songsRepository) {
                 let isAuthor = req.session.user == song.author;
                 let canBuy = (isAuthor || isBought);
                 let settings = {
-                    url: "http://api.currencylayer.com/live?access_key=bblTnJGS5I6TxVRfjRQMllqZqMjjzcpk&currencies=EUR,USD",
-                    //https://api.currencyapi.com/v3/latest?apikey=bblTnJGS5I6TxVRfjRQMllqZqMjjzcpk&base_currency=EUR&currencies=USD
+                    url: "https://api.currencyapi.com/v3/latest?apikey=cur_live_uuU8tmU3oEJ2Y7pgZphR3Cl4qn9waU75U0jM2jXw&base_currency=EUR&currencies=USD",
                     method: "get"
                 }
                 let rest = app.get("rest");
                 rest(settings, function (error, response, body) {
                     console.log("cod: " + response.statusCode + " Cuerpo :" + body);
                     let responseObject = JSON.parse(body);
-                    let rateUSD = responseObject.quotes.USDEUR;
+                    let rateUSD = responseObject.data.USD.value;
                     // nuevo campo "usd" redondeado a dos decimales
                     let songValue = song.price / rateUSD
                     song.usd = Math.round(songValue * 100) / 100;

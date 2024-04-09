@@ -34,7 +34,9 @@ module.exports = function (app, songsRepository, usersRepository) {
             res.json({error: "Se ha producido un error :" + e})
         }
     });
-
+    //Validar
+    //Debe contener todos los datos esperados
+    //Formato correcto de los datos (precio>=0, título con longitud x)
     app.post('/api/v1.0/songs', function (req, res) {
         try {
             let song = {
@@ -61,7 +63,10 @@ module.exports = function (app, songsRepository, usersRepository) {
             res.json({error: "Se ha producido un error al intentar crear la canción: " + e})
         }
     });
-
+    //Validar
+    //Debe contener todos los datos esperados
+    //Formato correcto de los datos (precio>=0, título con longitud x)
+    //Es dueño de la canción
     app.put('/api/v1.0/songs/:id', function (req, res) {
         try {
             let songId = new ObjectId(req.params.id);
@@ -104,7 +109,8 @@ module.exports = function (app, songsRepository, usersRepository) {
         }
     });
 
-
+    //Validar
+    //Es dueño de la canción
     app.delete('/api/v1.0/songs/:id', function (req, res) {
         try {
             let songId = new ObjectId(req.params.id)
