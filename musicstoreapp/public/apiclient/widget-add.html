@@ -24,6 +24,7 @@
         <button type="button" class="btn btn-primary" id="boton-add"
                 onclick="widgetAddSong()">Nueva canción</button>
     </div>
+    <p id="error-code"></p>
 </div>
 
 
@@ -44,7 +45,13 @@
                 $("#main-container").load("widget-songs.html");
             },
             error: function (error) {
-                $("#main-container").load("widget-login.html");
+                console.log(error)
+                console.log(error.responseJSON.error)
+
+                //$("#main-container").load("widget-add.html");
+                    $("#error-code").text("Error: " + error.responseJSON.error);
+                    //$("#error-message-label").text("Mensaje: " + error.json.error);
+                // Después de cargar el mensaje de erro
             }
         });
     }

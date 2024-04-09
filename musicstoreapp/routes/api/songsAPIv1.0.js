@@ -34,7 +34,7 @@ module.exports = function (app, songsRepository, usersRepository) {
             res.json({error: "Se ha producido un error :" + e})
         }
     });
-    //Validar
+    //Validar INSERT
     //Debe contener todos los datos esperados
     //Formato correcto de los datos (precio>=0, título con longitud x)
     app.post('/api/v1.0/songs', function (req, res) {
@@ -46,10 +46,24 @@ module.exports = function (app, songsRepository, usersRepository) {
                 author: req.session.user
             }
             // Validar aquí: título, género, precio y autor.
+            if(song.title == null || song.kind == null || song.price == null  || song.title == undefined || song.kind == undefined || song.price == undefined ){
+                res.status(400);
+                res.json({error: "No se ha podido crear la canción. Faltan campos."});
+                return;
+            } if (!checkInputLenght(song.title)) {
+                res.status(400);
+                res.json({error: "No se ha podido crear la canción. El título tiene que tener entre 0 y 10 letras."});
+                return;
+            } if (parseFloat(song.price) < 0) {
+                res.status(400);
+                res.json({error: "No se ha podido crear la canción. No puedes poner precio negativo."});
+                return;
+            }
             songsRepository.insertSong(song, function (songId) {
                 if (songId === null) {
                     res.status(409);
                     res.json({error: "No se ha podido crear la canción. El recurso ya existe."});
+                    return;
                 } else {
                     res.status(201);
                     res.json({
@@ -61,9 +75,10 @@ module.exports = function (app, songsRepository, usersRepository) {
         } catch (e) {
             res.status(500);
             res.json({error: "Se ha producido un error al intentar crear la canción: " + e})
+
         }
     });
-    //Validar
+    //Validar UPDATE
     //Debe contener todos los datos esperados
     //Formato correcto de los datos (precio>=0, título con longitud x)
     //Es dueño de la canción
@@ -82,6 +97,16 @@ module.exports = function (app, songsRepository, usersRepository) {
                 song.kind = req.body.kind;
             if (typeof req.body.price !== "undefined" && req.body.price !== null)
                 song.price = req.body.price;
+            // Validar aquí: título, género, precio y autor.
+             if (!checkInputLenght(song.title)) {
+                res.status(400);
+                res.json({error: "No se ha podido crear la canción. El título tiene que tener entre 0 y 10 letras."});
+                return;
+            } if (parseFloat(song.price) < 0) {
+                res.status(400);
+                res.json({error: "No se ha podido crear la canción. No puedes poner precio negativo."});
+                return;
+            }
             songsRepository.updateSong(song, filter, options).then(result => {
                 if (result === null) {
                     res.status(404);
@@ -109,16 +134,26 @@ module.exports = function (app, songsRepository, usersRepository) {
         }
     });
 
-    //Validar
+    //Validar DELETE
     //Es dueño de la canción
     app.delete('/api/v1.0/songs/:id', function (req, res) {
         try {
             let songId = new ObjectId(req.params.id)
             let filter = {_id: songId}
+
+            songsRepository.getSongAuthor(songId).then(author => {
+               if(author==req.session.user){
+                   res.status(400);
+                   res.json({error: "No eres el autor, no toques."});
+                   return;
+               }
+            });
+
             songsRepository.deleteSong(filter, {}).then(result => {
                 if (result === null || result.deletedCount === 0) {
                     res.status(404);
                     res.json({error: "ID inválido o no existe, no se ha borrado el registro."});
+                    return;
                 } else {
                     res.status(200);
                     res.send(JSON.stringify(result));
@@ -175,4 +210,9 @@ module.exports = function (app, songsRepository, usersRepository) {
             })
         }
     });
+}
+
+function checkInputLenght(inputStr){
+    if(inputStr!=null || inputStr!=undefined)
+    return (inputStr.length > 0 && inputStr.length <=10);
 }

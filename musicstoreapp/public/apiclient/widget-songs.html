@@ -13,6 +13,7 @@
         </thead>
         <tbody id="songsTableBody"></tbody>
     </table>
+    <p id="error-code"></p>
 </div>
 
 <script>
@@ -31,6 +32,7 @@
             success: function (response) {
                 songs = response.songs;
                 updateSongsTable(songs);
+                console.log(songs);
             },
             error: function (error) {
                 $("#main-container").load("widget-login.html");
@@ -66,7 +68,7 @@
                 $("#" + _id).remove(); // eliminar el <tr> de la canción
             },
             error: function (error) {
-                $("#main-container").load("widget-login.html");
+                $("#error-code").text("Error: " + error.responseJSON.error);
             }
         });
     }
